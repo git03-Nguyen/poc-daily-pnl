@@ -9,6 +9,7 @@ import {
 
 type Point = {
   dateTime: string;
+  soCompensation: number;
   dailyPnL: number;
   swap: number;
   commission: number;
@@ -49,7 +50,12 @@ const Statistics = () => {
         let points = json?.data?.points || [];
         for (let i = 0; i < points.length; i++) {
           points[i].winningPositionsPercent = (points[i].winningPositions / (points[i].winningPositions + points[i].losingPositions)) * 100;
-          points[i].balancePercent = ((points[i].balance - points[i].prevBalance) / points[i].prevBalance) * 100;
+          if (points[i].prevBalance !== 0) {
+            points[i].balancePercent = ((points[i].balance - points[i].prevBalance) / points[i].prevBalance) * 100;
+          }
+          else {
+            points[i].balancePercent = 0;
+          }
         }
         setPoints(points);
         setLoading(false);
@@ -91,12 +97,18 @@ const Statistics = () => {
         </label>
         <label>
           Time Range (days):
-          <input
-            type="number"
+          <select
             value={timeRange}
             onChange={(e) => setTimeRange(e.target.value)}
             style={{ margin: "0 10px" }}
-          />
+          >
+            <option value="3">3 days</option>
+            <option value="7">7 days</option>
+            <option value="30">30 days</option>
+            <option value="90">90 days</option>
+            <option value="180">180 days</option>
+            <option value="365">365 days</option>
+          </select>
         </label>
         <button type="submit">Fetch Data</button>
       </form>
@@ -158,6 +170,7 @@ const Statistics = () => {
                 <th>Daily PnL</th>
                 <th>Swap</th>
                 <th>Commission</th>
+                <th>PrevBalance</th>
                 <th>Balance</th>
                 <th>Withdraw/Deposit</th>
                 <th>Win</th>
@@ -169,9 +182,13 @@ const Statistics = () => {
               {points.map((point, index) => (
                 <tr key={index}>
                   <td>{new Date(point.dateTime).toLocaleString()}</td>
-                  <td>{point.dailyPnL}</td>
+                  <td>
+                    {point.dailyPnL}
+                    {point.soCompensation > 0 && ` + ${point.soCompensation}`}
+                  </td>
                   <td>{point.swap}</td>
                   <td>{point.commission}</td>
+                  <td>{point.prevBalance}</td>
                   <td>{point.balance} ({parsePercent(point.balancePercent)}%)</td>
                   <td>{point.withdraw}/{point.deposit}</td>
                   <td>{point.winningPositions}</td>
