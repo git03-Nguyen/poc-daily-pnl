@@ -183,16 +183,46 @@ const Statistics = () => {
                   <td>{new Date(point.dateTime).toLocaleString()}</td>
                   <td>
                     {point.dailyPnL}
-                    {point.soCompensation > 0 && ` + ${point.soCompensation}`}
+                    <span style={{ color: "green" }}>
+                      {point.soCompensation > 0 && ` + ${point.soCompensation}`}
+                    </span>
                   </td>
                   <td>{point.swap}</td>
                   <td>{point.commission}</td>
                   <td>{point.prevBalance}</td>
-                  <td>{point.balance} ({parsePercent(point.balancePercent)}%)</td>
-                  <td>{point.withdraw}/{point.deposit}</td>
-                  <td>{point.winningPositions}</td>
-                  <td>{point.losingPositions}</td>
-                  <td>{point.winningPositionsPercent.toFixed(2)}%</td>
+                  <td>
+                    {point.balance} (
+                    <span
+                      style={{
+                        color: point.balancePercent > 0
+                          ? "green"
+                          : point.balancePercent < 0
+                            ? "red"
+                            : "black",
+                      }}
+                    >
+                      {parsePercent(point.balancePercent)}%
+                    </span>
+                    )
+                  </td>
+                  <td>
+                    <span style={{ color: "red" }}>{point.withdraw}</span> / <span style={{ color: "green" }}>{point.deposit}</span>
+                  </td>
+                  <td style={{ color: "green" }}>{point.winningPositions}</td>
+                  <td style={{ color: "red" }}>{point.losingPositions}</td>
+                  <td>
+                    {isNaN(point.winningPositionsPercent) ? (
+                      ""
+                    ) : (
+                      <span
+                        style={{
+                          color: point.winningPositionsPercent >= 50 ? "green" : "red",
+                        }}
+                      >
+                        {point.winningPositionsPercent.toFixed(2)}%
+                      </span>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>
