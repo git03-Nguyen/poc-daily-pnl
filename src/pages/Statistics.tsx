@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import {
   LineChart, Line,
   BarChart, Bar,
@@ -25,7 +25,6 @@ type Point = {
 
 const Statistics = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
 
   const [accountId, setAccountId] = useState(searchParams.get("accountId") || "");
   const [timeRange, setTimeRange] = useState(searchParams.get("timeRange") || "30");
